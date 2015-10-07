@@ -1,0 +1,249 @@
+[buildout]
+parts =
+        clean_files
+        odoo
+        patch_files
+
+versions = versions
+find-links = http://download.gna.org/pychart/
+
+[odoo]
+recipe = anybox.recipe.odoo:server
+eggs = num2words
+       vatnumber
+       geoip
+       pypdf
+       gdata
+
+branch_name = 8.0
+version = git https://github.com/odoo/odoo.git                      ../../../../git/odoo        ${odoo:branch_name}
+addons = local ../addons
+         git https://github.com/OCA/canada                          ../../../git/canada         ${odoo:branch_name}
+         git https://github.com/OCA/server-tools                    ../../../git/server-tools   ${odoo:branch_name}
+         git https://github.com/OCA/crm                             ../../../git/crm            ${odoo:branch_name}
+         git https://github.com/OCA/sale-workflow                   ../../../git/sale-workflow  ${odoo:branch_name}
+; Freeze of vauxoo branch to avoid merge conflicts
+; ea4e7d introduces a fix to an update of odoo
+         git https://github.com/Vauxoo/addons-vauxoo                ../../../git/addons-vauxoo      ea4e7dfcd422fb59081736ee89c8ad864b56eb93
+         git https://github.com/OCA/manufacture                     ../../../git/manufacture        ${odoo:branch_name}
+         git https://github.com/OCA/product-attribute               ../../../git/product-attribute  ${odoo:branch_name}
+
+with_devtools = False
+options.db_name = False
+options.db_user = odoo8dev
+options.db_host = localhost
+# Pump timeout to 1h to be able to handle massive import the client
+# needs to do.
+options.limit_time_cpu = 10800
+options.limit_time_real = 3600
+options.longpolling_port = 8071
+options.max_cron_threads = 1
+options.proxy_mode = False
+options.syslog = False
+options.without_demo = True
+options.workers = 4
+options.xmlrpcs = False
+options.xmlrpc_port = 9999
+openerp_scripts =
+    openerp_starter=start_odoo
+    openerp_upgrader=upgrade_odoo
+interpreter_name=python_odoo
+
+[dev]
+recipe = ${odoo:recipe}
+eggs = ${odoo:eggs}
+version = ${odoo:version}
+addons = ${odoo:addons}
+
+with_devtools = ${odoo:with_devtools}
+options.db_name = ${odoo:options.db_name}
+options.db_user = ${odoo:options.db_user}
+options.db_host = ${odoo:options.db_host}
+options.limit_time_cpu = ${odoo:optiINSERT ons.limit_time_cpu}
+options.limit_time_real = ${odoo:options.limit_time_real}
+options.longpolling_port = ${odoo:options.longpolling_port}
+options.max_cron_threads = ${odoo:options.max_cron_threads}
+options.proxy_mode = ${odoo:options.proxy_mode}
+options.syslog = ${odoo:options.syslog}
+options.workers = ${odoo:options.workers}
+options.without_demo = ${odoo:options.without_demo}
+options.workers = ${odoo:options.workers}
+options.xmlrpcs = ${odoo:options.xmlrpcs}
+options.xmlrpc_port = ${odoo:options.xmlrpc_port}
+openerp_scripts = ${odoo:openerp_scripts}
+interpreter_name = ${odoo:interpreter_name}
+
+[prod]
+recipe = ${odoo:recipe}
+eggs = ${odoo:eggs}
+options.db_user = odoo8
+version = git /opt/${dev:options.db_user}/git/odoo /opt/${prod:options.db_user}/git/odoo HEAD
+addons = local ../addons
+         git /opt/${dev:options.db_user}/git/canada             /opt/${prod:options.db_user}/git/canada HEAD
+         git /opt/${dev:options.db_user}/git/server-tools       /opt/${prod:options.db_user}/git/server-tools HEAD
+         git /opt/${dev:options.db_user}/git/crm                /opt/${prod:options.db_user}/git/crm HEAD
+         git /opt/${dev:options.db_user}/git/sale-workflow      /opt/${prod:options.db_user}/git/sale-workflow HEAD
+         git /opt/${dev:options.db_user}/git/addons-vauxoo      /opt/${prod:options.db_user}/git/addons-vauxoo HEAD
+         git /opt/${dev:options.db_user}/git/manufacture        /opt/${prod:options.db_user}/git/manufacture HEAD
+         git /opt/${dev:options.db_user}/git/product-attribute  /opt/${prod:options.db_user}/git/product-attribute HEAD
+
+with_devtools = ${odoo:with_devtools}
+options.db_host = ${odoo:options.db_host}
+options.limit_time_cpu = ${odoo:options.limit_time_cpu}
+options.limit_time_real = ${odoo:options.limit_time_real}
+options.max_cron_threads = ${odoo:options.max_cron_threads}
+options.proxy_mode = True
+options.syslog = ${odoo:options.syslog}
+options.without_demo = ${odoo:options.without_demo}
+options.workers = ${odoo:options.workers}
+options.xmlrpcs = ${odoo:options.xmlrpcs}
+options.xmlrpc_port = 8069
+openerp_scripts = ${odoo:openerp_scripts}
+interpreter_name = ${odoo:interpreter_name}
+
+[upgrade]
+recipe = ${odoo:recipe}
+eggs = ${odoo:eggs}
+version = git https://github.com/OpenUpgrade/OpenUpgrade.git ../../../../git/odoo ${odoo:branch_name}
+addons = ${odoo:addons}
+
+with_devtools = ${odoo:with_devtools}
+options.db_name = ${odoo:options.db_name}
+options.db_name = ${odoo:options.db_name}
+options.db_host = ${odoo:options.db_host}
+options.limit_time_cpu = ${odoo:options.limit_time_cpu}
+options.limit_time_real = ${odoo:options.limit_time_real}
+options.max_cron_threads = ${odoo:options.max_cron_threads}
+options.proxy_mode = ${odoo:options.proxy_mode}
+options.syslog = ${odoo:options.syslog}
+options.without_demo = True
+options.workers = 0
+options.xmlrpc_port = ${odoo:options.xmlrpc_port}
+options.xmlrpcs = ${odoo:options.xmlrpcs}
+openerp_scripts = openerp_starter=start_openupgrade
+
+[clean_files]
+recipe = cp.recipe.cmd
+revert_clean_tree =
+                   git clean -xfd
+                   git remote rm sfl 2> /dev/null
+                   git checkout ${odoo:branch_name}
+                   git reset --hard origin/${odoo:branch_name}
+
+install_cmd =
+              if [ -d ${buildout:directory}/../../odoo ]
+                then
+                  echo "Cleaning up odoo..."
+                  cd ${buildout:directory}/../../odoo
+                  ${clean_files:revert_clean_tree}
+              fi
+              if [ -d ${buildout:directory}/../../sale-workflow ]
+                then
+                  echo "Cleaning up sale-workflow..."
+                  cd ${buildout:directory}/../../sale-workflow
+                  ${clean_files:revert_clean_tree}
+              fi
+              if [ -d ${buildout:directory}/../../server-tools ]
+                then
+                  echo "Cleaning up server-tools..."
+                  cd ${buildout:directory}/../../server-tools
+                  ${clean_files:revert_clean_tree}
+              fi
+              if [ -d ${buildout:directory}/../../crm ]
+                then
+                  echo "Cleaning up crm..."
+                  cd ${buildout:directory}/../../crm
+                  ${clean_files:revert_clean_tree}
+              fi
+
+              if [ -d ${buildout:directory}/../../manufacture ]
+                then
+                  echo "Cleaning up manufacture..."
+                  cd ${buildout:directory}/../../manufacture
+                  ${clean_files:revert_clean_tree}
+              fi
+              if [ -d ${buildout:directory}/../../addons-vauxoo ]
+                then
+                  echo "Cleaning up addons-vauxoo..."
+                  cd ${buildout:directory}/../../addons-vauxoo
+                  ${clean_files:revert_clean_tree}
+              fi
+              if [ -d ${buildout:directory}/../../product-attribute ]
+                then
+                  echo "Cleaning up product-attribute..."
+                  cd ${buildout:directory}/../../product-attribute
+                  ${clean_files:revert_clean_tree}
+              fi
+
+update_cmd = ${clean_files:install_cmd}
+
+[patch_files]
+recipe = cp.recipe.cmd
+install_cmd =
+              echo "Patching odoo..."
+              cd ${buildout:directory}/../../odoo
+              git remote add sfl https://github.com/savoirfairelinux/odoo.git
+              git fetch sfl
+              git merge 3a5670f0418eb2ce4f6c9c9af93f9ac7a45a8028 # sfl/8.0_mrp_repair_update_contraint # https://github.com/odoo/odoo/pull/6826
+
+              echo "Patching sale-workflow..."
+              cd ${buildout:directory}/../../sale-workflow
+              git remote add sfl https://github.com/savoirfairelinux/sale-workflow.git
+              git fetch sfl
+              git merge c9bfded54d5b1f64b4b65f41c01f0752c25937ea # sfl/8.0-sale_order_revision # https://github.com/OCA/sale-workflow/pull/105
+              git merge fac2147afbdfe422fc4067fa8099e081e4f00d93 # sfl/8.0-sale_order_revision_sequence
+
+              echo "Patching  manufacture..."
+              cd ${buildout:directory}/../../manufacture
+              git remote add sfl https://github.com/savoirfairelinux/manufacture.git
+              git fetch sfl
+              git merge 342e0f567b701c14d462a3a4da7bf3944d76afd7 # sfl/8.0-ddufresne-bom_reference # https://github.com/OCA/manufacture/pull/14
+
+              echo "Patching addons-vauxoo..."
+              cd ${buildout:directory}/../../addons-vauxoo
+              git remote add sfl https://github.com/savoirfairelinux/addons-vauxoo.git
+              git fetch sfl
+              git merge d51807a85b39115ef8cbf06c67e034f88fbd4c4f # sfl/8.0-product_unique_default_code # https://github.com/Vauxoo/addons-vauxoo/pull/172
+
+              cd ${buildout:directory}/..
+
+update_cmd = ${patch_files:install_cmd}
+
+[clean_files_upgrade]
+recipe = ${clean_files:recipe}
+revert_clean_tree = ${clean_files:revert_clean_tree}
+install_cmd =
+              if [ -d ${buildout:directory}/../../../git/server-upgrade ]
+                then
+                  echo "Cleaning up server-upgrade..."
+                  cd ${buildout:directory}/../../../git/server-upgrade
+                  ${clean_files_upgrade:revert_clean_tree}
+              fi
+
+update_cmd = ${clean_files_upgrade:install_cmd}
+
+[patch_files_upgrade]
+recipe = ${patch_files:recipe}
+install_cmd =
+              echo "Patching OpenUpgrade..."
+              cd ${buildout:directory}/../../../git/server-upgrade
+              git remote add sfl https://github.com/savoirfairelinux/odoo.git
+              git fetch sfl
+              # git merge sfl/7.0-translate_warnings_1297525  # https://github.com/odoo/odoo/pull/22 # example
+
+              cd ${buildout:directory}/..
+
+update_cmd = ${patch_files_upgrade:install_cmd}
+
+[build_templates]
+recipe = z3c.recipe.filetemplate
+source-directory = templates
+
+[versions]
+anybox.recipe.odoo = 1.9.1
+zc.buildout = 2.2.5
+; Incompatibility with werkzeug 0.10 when closing a session, the following
+; error is raised:
+; [Errno 9] Bad file descriptor
+; Bug report; https://github.com/odoo/odoo/issues/5057
+werkzeug = 0.9.6

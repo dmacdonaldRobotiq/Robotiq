@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <record id="product_default_code_kanban_view" model="ir.ui.view">
+            <field name="name">Product Kanban: Add default code</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_kanban_view"/>
+            <field name="arch" type="xml">
+                <div name="tags" position="before">
+                    <h4>
+                        <a type='open'>
+                            <field name='default_code'/>
+                        </a>
+                    </h4>
+                </div>
+            </field>
+        </record>
+
+    </data>
+</openerp>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="report.style">
+body {
+    color: #000 !important;
+}
+.border-black td {
+    border-top: 1px solid black !important;
+}
+
+.table-condensed &gt; thead &gt; tr &gt; th {
+    border-bottom: 1px solid black;
+    border-top: 1px solid black;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+}
+
+.table-condensed th {
+    border-bottom: 1px solid black;
+    border-top: 1px solid black;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+}
+
+.zero_min_height {
+    min-height: 0px !important;
+}
+
+.robotiq_table{
+    margin-top:30px;
+    margin-bottom:0px;
+    margin-left:0px;
+    margin-right:0px;
+    padding-left:0px;
+    padding-right:0px;
+    width:100%;
+}
+.robotiq_table th{
+    vertical-align:middle;
+    border-left: solid 1px black;
+    border-bottom: solid 1px black;
+    border-right: solid 1px black;
+    border-top: solid 1px black;
+    padding-left: 5px;
+    padding-right:5px;
+}
+.table_doc_lines td{
+    border-left: solid 1px black;
+    border-bottom: solid 1px black;
+    border-right: solid 1px black;
+    border-top: solid 1px black;
+    padding-left: 5px;
+    padding-right:5px;
+}
+
+.robotiq_top_block{
+    margin-top:20px;
+    margin-bottom:20px;
+    margin-left:0px;
+    margin-right:0px;
+    padding-left:0px;
+    padding-right:0px;
+    width:100%;
+    border:none;
+}
+.robotiq_top_block td{
+    padding-top:1px;
+    padding-bottom:1px;
+}
+
+.total_label{
+    font-weight: bold;
+}
+
+.total_cell{
+    border-top:0;
+    border-bottom:0;
+    border-left: solid 1px black;
+    border-right: solid 1px black;
+    padding-right:5px;
+    text-align: right;
+}
+
+
+.robotiq_header_block_sale_order{
+    float:right;
+    width:60%;
+    font-weight: bold;
+    margin-top:10px;
+}
+.robotiq_header_block_sale_order td:first-child{
+    text-align:right;
+}
+.robotiq_header_block_sale_order td:nth-child(2){
+    text-align:left;
+    padding-left:20px;
+}
+
+.robotiq_packing_slip_top_block{
+    margin-top: 30px;
+    margin-bottom: 10px;
+    width: 67%;
+}
+.robotiq_packing_slip_top_block td{
+    width: 50%;
+    text-align: center;
+    vertical-align: middle;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-right: solid 1px black;
+    border-left: solid 1px black;
+}
+
+.robotiq_packing_slip_top_block tr:first-child td{
+    font-weight: bold;
+    padding-bottom: 0px;
+    border-top: solid 1px black;
+}
+.robotiq_packing_slip_top_block tr:nth-child(2) td{
+    border-bottom: solid 1px black;
+}
+
+        </template>
+    </data>
+</openerp>

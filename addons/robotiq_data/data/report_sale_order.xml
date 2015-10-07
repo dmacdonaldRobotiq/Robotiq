@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <template id="robotiq_data.external_layout_sale_order">
+            <t t-call="robotiq_data.external_layout_header_sale_order"/>
+            <t t-raw="0"/>
+            <t t-call="report.external_layout_footer"/>
+        </template>
+
+        <template id="robotiq_data.external_layout_sale_order">
+            <!-- Multicompany -->
+            <t t-if="o and 'company_id' in o">
+                <t t-set="company" t-value="o.company_id"></t>
+            </t>
+            <t t-if="not o or not 'company_id' in o">
+                <t t-set="company" t-value="res_company"></t>
+            </t>
+            <div class="header">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <t t-call="robotiq_data.header"/>
+                        <table class="robotiq_header_block_sale_order">
+                            <tr style="font-size:20px;">
+                                <td style="padding-bottom: 10px;">
+                                    <span t-if="o.state in ['draft', 'sent']">Quotation</span>
+                                    <span t-if="o.state not in ['draft', 'sent']">Sale Order</span>
+                                </td>
+                                <td style="padding-bottom: 10px;">
+                                    <span t-field="o.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right;">Date (MDY)</td>
+                                <td>
+                                    <span t-esc="time.strftime('%m/%d/%Y',time.strptime(o.date_order,'%Y-%m-%d %H:%M:%S'))"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <t t-if="o.expected_shipping_date">
+                                    <td style="text-align:right;">Expected Shipping Date</td>
+                                    <td>
+                                        <span t-esc="time.strftime('%m/%d/%Y',time.strptime(o.expected_shipping_date,'%Y-%m-%d'))"/>
+                                    </td>
+                                </t>
+                            </tr>
+                            <tr>
+                                <t t-if="o.client_order_ref">
+                                    <td style="text-align:right;">PO</td>
+                                    <td>
+                                        <span t-field="o.client_order_ref"/>
+                                    </td>
+                                </t>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <t t-raw="0"/>
+            <t t-call="report.external_layout_footer"/>
+        </template>
+
+        <template id="sale.report_saleorder_document">
+            <t t-call="robotiq_data.external_layout_sale_order">
+                <div class="page">
+
+                    <table class="robotiq_top_block">
+                        <tr>
+                            <td style="font-weight: bold; width:10%;">Bill to:</td>
+                            <td style="width:40%;">
+                                <div t-field="o.partner_invoice_id" 
+                                t-field-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": true}'/>
+                            </td>
+                            <td style="font-weight: bold; width:10%;">Ship to:</td>
+                            <td style="width:40%;">
+                                <div t-field="o.partner_shipping_id" 
+                                t-field-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": true}'/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold;">Phone:</td>
+                            <td><div t-field="o.partner_invoice_id.phone"/></td>
+                            <td style="font-weight: bold;">Phone:</td>
+                            <td><div t-field="o.partner_shipping_id.phone"/></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold;">Email:</td>
+                            <td><div t-field="o.partner_invoice_id.email"/></td>
+                            <td style="font-weight: bold;">Email:</td>
+                            <td><div t-field="o.partner_shipping_id.email"/></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold; ">VAT:</td>
+                            <td><div t-field="o.partner_invoice_id.vat"/></td>
+                        </tr>
+                    </table>
+                    <table class="robotiq_top_block">
+                        <tr>
+                            <td style="font-weight: bold; width:17%">Delivery service:</td>
+                            <td style="width:33%;"><div t-field="o.carrier_id.name"/></td>
+
+                            <td style="font-weight: bold; width:17%;">Shipping policy:</td>
+                            <td style="width:33%;"><div t-field="o.picking_policy"/></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold; width:17%;">Incoterms:</td>
+                            <td style="width:33%;"><div t-field="o.incoterm.name"/></td>
+                            <td style="font-weight: bold; width:17%;">Requested date:</td>
+                            <td style="width:33%;">
+                                <t t-if="o.requested_date">
+                                    <span t-esc="time.strftime('%m/%d/%Y',time.strptime(o.requested_date, '%Y-%m-%d %H:%M:%S'))"/>
+                                </t>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <table class="robotiq_table">
+                        <thead>
+                            <tr>
+                                <th style="width:5%; text-align: center;">#</th>
+                                <th style="width:47%">Item #<br/><span style="margin-left:15px;"/>Description</th>
+                                <th style="width:16%; text-align: center;margin-top:10px;" class="text-right">Quantity Req.</th>
+                                <th style="width:16%; text-align: center;margin-top:10px;" class="text-right">Unit Price</th>
+                                <th style="width:16%; text-align: center;margin-top:10px;" class="text-right">Extended Price</th>
+                            </tr>
+                       </thead>
+                       <tbody class="sale_tbody">
+                            <tr class="table_doc_lines" t-foreach="o.order_line" t-as="l">
+                                <td style="text-align: center;">
+                                   <span t-field="l.sequence"/>
+                                </td>
+                                <td>
+                                    <div t-esc="l.product_id.default_code"/>
+                                    <div t-field="l.name" style="margin-left:15px;"/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-esc="'{0:,}'.format(l.product_uom_qty % 1 and l.product_uom_qty or int(l.product_uom_qty))"/>
+                                </td>
+                                <td class="text-right">
+                                    <!-- The decimal precision is higher than what is displayed to the customer -->
+                                    <span t-esc="'{0:,.2f}'.format(l.price_unit)"/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-esc="'{0:,.2f}'.format(l.price_subtotal)"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border:none;"></td><td style="border:none;"></td><td style="border:none;"></td>
+                                <td class="total_label total_cell">
+                                    <span t-esc="'SubTotal (%s)' % o.pricelist_id.currency_id.name" style="margin-left:5px;"/>
+                                </td>
+                                <td class="text-right total_cell">
+                                    <span t-esc="'{0:,.2f}'.format(o.amount_untaxed)"/>
+                                </td>
+                            </tr>
+                            <t t-if="o.amount_tax">
+                                <tr>
+                                    <td style="border:none;"></td><td style="border:none;"></td><td style="border:none;"></td>
+                                    <td class="total_label total_cell">
+                                        <span t-esc="'Taxes (%s)' % o.pricelist_id.currency_id.name" style="margin-left:5px;"/>
+                                    </td>
+                                    <td class="text-right total_cell">
+                                        <span t-esc="'{0:,.2f}'.format(o.amount_tax)"/>
+                                    </td>
+                                </tr>
+                            </t>
+                            <tr>
+                                <td style="border:none;"></td><td style="border:none;"></td><td style="border:none;"></td>
+                                <td class="total_label total_cell" style="border-bottom:1px black solid;">
+                                    <span t-esc="'Total (%s)' % o.pricelist_id.currency_id.name" style="margin-left:5px;"/>
+                                </td>
+                                <td class="text-right total_cell" style="border-bottom:1px black solid;">
+                                    <span t-esc="'{0:,.2f}'.format(o.amount_total)"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div style="margin-top:30px;">
+                        <span t-field="o.note"/>
+                    </div>
+                </div>
+
+            </t>
+        </template>
+    </data>
+</openerp>

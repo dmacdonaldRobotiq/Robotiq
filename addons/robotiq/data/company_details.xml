@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+        <record id="base.main_company" model="res.company">
+            <field name="logo" type="base64" file="robotiq/static/logo_company.png"/>
+            <field name="name">Robotiq</field>
+            <!--Tagline-->
+            <field name="rml_header1"> </field>
+            <!--Address fields-->
+            <field name="street">966, chemin Olivier, Suite 325</field>
+            <field name="city">St-Nicolas</field>
+            <field name="zip">G7A 2N1</field>
+            <field name="state_id" ref="l10n_ca_toponyms.QC"/>
+            <field name="country_id" ref="base.ca"/>
+            <!--Contacts-->
+            <!--If this field is update, think to update rml_footer too-->
+            <field name="website">http://robotiq.com</field>
+            <!--If this field is update, think to update rml_footer too-->
+            <field name="email"/>
+            <!--If this field is update, think to update rml_footer too-->
+            <field name="phone">+1-418-380-2788</field>
+            <field name="fax">+1-418-800-0046</field>
+            <field name="currency_id" ref="base.CAD"/>
+
+            <field name="rml_header"><![CDATA[
+<header>
+    <pageTemplate>
+        <frame id="first" x1="1.3cm" y1="3.0cm" height="21.7cm" width="19.0cm"/>
+         <stylesheet>
+            <!-- Set here the default font to use for all <para> tags -->
+            <paraStyle name='Normal' fontName="DejaVuSans"/>
+            <paraStyle name="main_footer" fontSize="6.0" alignment="CENTER" textColor="grey"/>
+            <paraStyle name="main_header" fontSize="8.0" leading="10" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0"/>
+         </stylesheet>
+        <pageGraphics>
+            <!-- Set here the default font to use for all <drawString> tags -->
+            <setFont name="DejaVuSans" size="8"/>
+
+
+            <!-- page header -->
+
+            <lineMode width="0.4cm"/>
+            <lines>1.3cm 28.7cm 20cm 28.7cm</lines>
+
+            <stroke color="#00A6E4"/>
+            <lineMode width="0.12cm"/>
+            <lines>1.3cm 28.5cm 20cm 28.5cm</lines>
+            <lineMode width="1"/>
+
+            <image x="1.3cm" y="27cm" height="40.0" >[[ company.logo or removeParentNode('image') ]]</image>
+            <fill color="black"/>
+
+            <drawRightString x="20cm" y="27.8cm">[[ company.rml_header1 ]]</drawRightString>
+
+
+            <!--page bottom-->
+
+            <stroke color="grey"/>
+            <lines>1.2cm 1.8cm 19.9cm 1.8cm</lines>
+
+            <place x="1.3cm" y="0cm" height="1.5cm" width="19.0cm">
+<para style="main_footer">[[ "%s, %s, %s, %s, %s %s %s" % (company.name, company.street, company.city, company.state_id.name, company.country_id.name,  company.zip, company.phone) ]]</para>
+            </place>
+
+
+            <place x="6.45cm" y="0cm" height="1.0cm" width="3.0cm">
+                <para style="main_footer">TPS# 852625698 RT0001</para>
+            </place>
+
+            <place x="9.45cm" y="0cm" height="1.0cm" width="2.5cm">
+                <para style="main_footer">TVQ# 1214385364</para>
+            </place>
+
+            <place x="11.85cm" y="0cm" height="1.0cm" width="3.5cm">
+                <para style="main_footer">TQ0001VAT# CA852625698</para>
+            </place>
+
+            <place x="17.0cm" y="0cm" height="1.5cm" width="5.0cm">
+                <para style="main_footer"><pageNumber/></para>
+            </place>
+
+        </pageGraphics>
+    </pageTemplate>
+</header>]]>
+            </field>
+        </record>
+
+    </data>
+</openerp>
+
+

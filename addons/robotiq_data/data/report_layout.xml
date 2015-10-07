@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- Qweb Header -->
+        <template id="report.external_layout_header">
+            <div class="header">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div style="border-bottom: 9px solid black;"/>
+                        <div style="border-bottom: 3px solid #00A6E4;"/>
+                        <img class="robotiq_logo" t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="height: 60px;"/>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Qweb Footer -->
+        <template id="report.external_layout_footer">
+            <div class="footer">
+                <div class="text-center" style="border-top: 1px solid #707070; color: #707070; font-width:12px;">
+
+                    <div style="margin-top: 10px;">
+
+                        <span t-field="company.name" style="padding-left: 2%;"/>
+                        <t t-if="company.street"><span style="margin-left:2%;" t-field="company.street"/></t>
+                        <t t-if="company.street2"><span style="margin-left:2%;" t-field="company.street2"/></t>
+                        <t t-if="company.city"><span style="margin-left:2%;" t-field="company.city"/></t>
+                        <t t-if="company.state_id"><span style="margin-left:2%;" t-field="company.state_id.name"/></t>
+                        <t t-if="company.zip"><span style="margin-left:2%;" t-field="company.zip"/></t>
+                        <t t-if="company.phone"><span style="margin-left:2%;" t-field="company.phone"/></t>
+
+                        <span style="float:right;"><span class="page"/>/<span class="topage"/></span>
+
+                    </div>
+
+                    <div>
+                        <span style="margin-left:2%;">TPS# 852625698 RT0001</span>
+                        <span style="margin-left:2%;">TVQ# 1214385364 TQ0001</span>
+                        <span style="margin-left:2%;">VAT# CA852625698</span>
+                    </div>
+
+                </div>
+            </div>      
+        </template>
+
+        <template id="robotiq_data.header">
+            <div style="border-bottom: 9px solid black;"/>
+            <div style="border-bottom: 3px solid #00A6E4;"/>
+            <img class="robotiq_logo" t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="height: 60px; margin-top:5px;"/>
+        </template>
+
+    </data>
+</openerp>

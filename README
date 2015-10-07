@@ -1,0 +1,33 @@
+SKILLS NEEDED
+-------------
+This project is in Python (2.7) and it works on Odoo 8.0. Knowing both of them is needed.
+
+COMPONENTS
+----------
+See INSTALL and UPGRADE.
+
+COPYING
+-------
+See of the COPYING in the root directory of the project.
+
+DOCUMENTATION
+-------------
+This project has no documentation yet. The wiki on https:projects.savoirfairelinux.com
+for this project has valuable information.
+
+HOW TO USE
+----------
+See INSTALL on how to start the server.
+See UPGRADE on how to upgrade the database.
+
+AUTHORS
+-------
+See AUTHORS.
+
+BUG REPORT
+----------
+Use http://projects.savoirfairelinux.com.
+
+CHANGES
+-------
+Added openupgrade scripts

@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <report 
+            string="Commercial Invoice" 
+            id="action_report_commercial_invoice" 
+            model="stock.picking"
+            report_type="qweb-pdf"
+            name="robotiq_data.report_commercial_invoice" 
+            file="robotiq_data.report_commercial_invoice" 
+        />
+
+        <template id="robotiq_data.external_layout_commercial_invoice">
+            <!-- Multicompany -->
+            <t t-if="o and 'company_id' in o">
+                <t t-set="company" t-value="o.company_id"></t>
+            </t>
+            <t t-if="not o or not 'company_id' in o">
+                <t t-set="company" t-value="res_company"></t>
+            </t>
+            <div class="header">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <t t-call="robotiq_data.header"/>
+                        <table class="robotiq_header_block_sale_order" style="width:65%;">
+                            <tr><td colspan="2" style="font-size:20px; text-align: left;">Commercial Invoice</td></tr>
+                            <tr>
+                                <td style="text-align:right; width: 35%;">Date:</td>
+                                <td style="width:65%;"><span t-field="o.date_done"/></td>
+                            </tr>
+                            <t t-if="o.sale_id">
+                                <tr>
+                                    <td style="text-align:right; width: 35%;">Purchase Order No.:</td>
+                                    <td style="width:65%;"><span t-field="o.sale_id.client_order_ref"/></td>
+                                </tr>
+                            </t>
+                            <tr>
+                                <td style="text-align:right; width: 35%;">Carrier Tracking Ref:</td>
+                                <td style="width:65%;"><span t-field="o.carrier_tracking_ref"/></td>
+                            </tr>
+                            <t t-if="o.sale_id">
+                                <tr>
+                                    <td style="text-align:right; width: 35%;">Reason to Export:</td>
+                                    <td style="width:65%;"><div t-field="o.sale_id.reason_to_export_id"/></td>
+                                </tr>
+                            </t>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <t t-raw="0"/>
+            <t t-call="report.external_layout_footer"/>
+        </template>
+
+        <template id="robotiq_data.report_commercial_invoice">
+            <t t-call="report.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="robotiq_data.external_layout_commercial_invoice">
+                        <div class="page">
+                            <t t-if="o.sale_id">
+
+                            <table class="robotiq_top_block">
+                                <t t-set="ship_address" t-value="o.partner_id"/>
+
+                                <t t-if="o.sale_id">
+                                    <t t-set="ship_address" t-value="o.sale_id.partner_shipping_id"/>
+                                </t>
+
+                                <tr>
+                                    <td style="font-weight: bold; width:10%;">Bill to:</td>
+                                    <td style="width:40%;">
+                                        <t t-if="o.sale_id">
+                                            <div t-field="o.sale_id.partner_invoice_id" 
+                                                t-field-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": true}'/>
+                                        </t>
+                                    </td>
+
+                                    <td style="font-weight: bold; width:10%;">Ship to:</td>
+                                    <td style="width:40%;">
+                                        <t t-if="o.sale_id">
+                                            <div t-field="o.sale_id.partner_shipping_id" 
+                                                t-field-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": true}'/>
+                                        </t>
+                                        <t t-if="not o.sale_id">
+                                            <div t-field="o.partner_id" 
+                                                t-field-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": true}'/>
+                                        </t>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: bold;">Phone:</td>
+                                    <td><div t-field="o.sale_id.partner_invoice_id.phone"/></td>
+                                    <td style="font-weight: bold;">Phone:</td>
+                                    <td><div t-field="ship_address.phone"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: bold;">Email:</td>
+                                    <td><div t-field="o.sale_id.partner_invoice_id.email"/></td>
+                                    <td style="font-weight: bold;">Email:</td>
+                                    <td><div t-field="ship_address.email"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: bold; ">VAT:</td>
+                                    <td><div t-field="o.sale_id.partner_invoice_id.vat"/></td>
+                                </tr>
+                            </table>
+
+                            <table class="robotiq_top_block" style="width:50%">
+                                <tr>
+                                    <td style="font-weight: bold; width:20%;">Seller:</td>
+                                    <td style="width:80%;">
+                                        <div t-field="o.company_id.partner_id"
+                                        t-field-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": true}'/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: bold;">Phone:</td>
+                                    <td><div t-field="o.company_id.phone"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: bold;">Email:</td>
+                                    <td><div t-field="o.company_id.email"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: bold; ">VAT:</td>
+                                    <td><div t-field="o.company_id.vat"/></td>
+                                </tr>
+                            </table>
+
+                            <table class="robotiq_table">
+                                <thead>
+                                    <tr>
+                                        <th style="width:7%; text-align: center;">Qty</th>
+                                        <th style="width:25%; text-align: center;">Description</th>
+                                        <th style="width:12%; text-align: center; margin-top:10px;">S/N</th>
+                                        <th style="width:12%; text-align: center; margin-top:10px;">HS Code</th>
+                                        <th style="width:12%; text-align: center; margin-top:10px; border-right:1px black solid;;">Country of Origin</th>
+                                        <th style="width:16%; text-align: center; margin-top:10px; border-left:0;">Unit Price</th>
+                                        <th style="width:16%; text-align: center; margin-top:10px;">Extended Price</th>
+                                    </tr>
+                               </thead>
+                               <tbody class="sale_tbody">
+                                    <tr class="table_doc_lines" t-foreach="o.move_lines" t-as="l">
+                                        <td style="text-align: center; width:7%; vertical-align: middle;">
+                                            <div t-esc="'{0:}'.format(l.product_uom_qty % 1 and l.product_uom_qty or int(l.product_uom_qty))"/>
+                                        </td>
+                                        <td style="text-align: left; width:25%;">
+                                            <div t-field="l.product_description"/>
+                                        </td>
+                                        <td style="text-align: center; width:12%; vertical-align: middle;">
+                                            <t t-if="l.lot_ids">
+                                                <t t-foreach="l.lot_ids" t-as="serial_number">
+                                                    <div t-field="serial_number.name"/>
+                                                </t>
+                                            </t>
+                                        </td>
+                                        <td style="text-align: center; width:12%; vertical-align: middle;">8479909440</td>
+                                        <td style="text-align: center; width:12%; vertical-align: middle; border-right:1px black solid;">Canada</td>
+                                        <td style="text-align: center; width:16%; vertical-align: middle; border-left:0;">
+                                            <span t-esc="'{0:,.2f}'.format(l.price_from_invoice)"/>
+                                        </td>
+                                        <td style="text-align: center; width:16%; vertical-align: middle;">
+                                            <span t-esc="'{0:,.2f}'.format(l.price_from_invoice * l.product_uom_qty)"/>
+                                            <span t-esc="o.currency_id.name" style="margin-left: 3px;"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border:none;"></td><td style="border:none;"></td><td style="border:none;"></td>
+                                        <td style="border:none;"></td><td style="border:none;"></td>
+                                        <td class="total_label total_cell">
+                                            <span>SubTotal</span>
+                                        </td>
+                                        <td class="total_cell" style="text-align:center;">
+                                            <span t-esc="'{0:,.2f}'.format(sum([l.price_from_invoice * l.product_uom_qty for l in o.move_lines]))"/>
+                                            <span t-esc="o.currency_id.name" style="margin-left: 3px;"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border:none;"></td><td style="border:none;"></td><td style="border:none;"></td>
+                                        <td style="border:none;"></td><td style="border:none;"></td>
+                                        <td class="total_label total_cell" style="border-bottom: 1px black solid;">
+                                            <span>Total</span>
+                                        </td>
+                                        <td class="total_cell" style="border-bottom: 1px black solid; text-align:center;">
+                                            <span t-esc="'{0:,.2f}'.format(sum([l.price_from_invoice * l.product_uom_qty for l in o.move_lines]))"/>
+                                            <span t-esc="o.currency_id.name" style="margin-left: 3px;"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border:none;"></td><td style="border:none;"></td><td style="border:none;"></td>
+                                        <td style="border:none;"></td><td style="border:none;"></td>
+                                        <td colspan="2" style="font-size: 10px; border-left:0; border-right:0; border-bottom:0; text-align:left;">Value declared for customs purposes only.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <table>
+                                <tr><td>
+                                    <table style="width: 100%;">
+                                        <t t-if="o.number_of_packages">
+                                            <tr>
+                                                <td style="width: 35%;">Total number of Packages:</td>
+                                                <td style="padding-left:10px;"><span t-field="o.number_of_packages"/></td>
+                                            </tr>
+                                        </t>
+                                        <t t-if="o.total_weight">
+                                            <tr>
+                                                <td style="width: 35%;">Total Weight (kg):</td>
+                                                <td style="padding-left:10px;"><span t-field="o.total_weight"/></td>
+                                            </tr>
+                                        </t>
+                                        <t t-if="o.sale_id and o.sale_id.reason_to_export_id">
+                                            <tr>
+                                                <td style="width: 35%;">Decleration Statement:</td>
+                                                <td style="padding-left:10px;">
+                                                    <span t-field="o.sale_id.reason_to_export_id"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                        <tr>
+                                            <td style="width: 35%;">Shipper Signature:</td>
+                                            <td style="padding-left:10px;">
+                                                <img t-if="user.signature_logo" t-att-src="'data:image/png;base64,%s' % user.signature_logo"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td></tr>
+                            </table>
+                            </t>
+                            <t t-if="not o.sale_id">
+                                <div>
+                                    The Commercial Invoice <span t-field="o.name"/> can not be printed because it is not linked to a sale order.
+                                </div>
+                            </t>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</openerp>

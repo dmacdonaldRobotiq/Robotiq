@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="crm_lead_domain_mark_won_form_view" model="ir.ui.view">
+            <field name="name">CRM Lead: Add domain on Mark Won button</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_case_form_view_oppor"/>
+            <field name="arch" type="xml">
+                <button name="case_mark_won" position="attributes">
+                    <!--Ids are hardcoded here as stage_id is a model to test against.-->
+                    <!--It seems not to be a big deal as I don't see a lot of crm.lead.stage-->
+                    <!--added for this project-->
+                    <attribute name="attrs">{'invisible': [('stage_id', 'in', [2,6,7])]} </attribute>
+                </button>
+
+            </field>
+        </record>
+
+    </data>
+</openerp>

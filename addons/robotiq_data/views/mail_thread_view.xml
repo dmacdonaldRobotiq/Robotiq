@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <!--according to https://projects.savoirfairelinux.com/issues/68161-->
+        <menuitem name="Messaging"
+                  id="mail.mail_feeds_main"
+                  groups="base.group_user"
+                  sequence="1000"/>
+
+    </data>
+</openerp>

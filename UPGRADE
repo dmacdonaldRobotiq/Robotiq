@@ -1,0 +1,28 @@
+Requirements
+============
+
+Same as INSTALL
+
+Installation steps
+==================
+
+Prepare the environment as in INSTALL and stop old Odoo
+
+Install the upgrade environnement
+
+  cd ..
+  ./git/sfl/tools/upgrade.sh
+
+Back up the Database
+
+  createdb -O odoo8dev -T old_database odoo8dev
+
+Start OpenUpgrade
+
+  ./bin/start_openupgrade -d odoo8dev --update all --stop-after-init
+
+Start new Odoo
+
+  ./bin/start_odoo.sh
+
+and connect to http://localhost:9999
